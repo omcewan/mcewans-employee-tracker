@@ -13,7 +13,7 @@ async function getDepartments() {
   const [rows] = await connection.execute(sql);
   const tableAllDepartments = cTable.getTable(rows);
   console.log(tableAllDepartments);
-  connection.end();
+  connection.end()
 }
 
 module.exports = getDepartments;

@@ -17,7 +17,7 @@ async function getRoles() {
   const [rows] = await connection.execute(sql);
   const tableAllRoles = cTable.getTable(rows);
   console.log(tableAllRoles);
-  connection.end();
+  connection.end()
 }
 
 module.exports = getRoles;

@@ -1,7 +1,11 @@
 const inquirer = require("inquirer");
-const getEmployees = require("./utils/employees")
-const getRoles = require("./utils/roles")
-const getDepartments = require("./utils/departments")
+const {
+  getEmployees,
+  employeesByManager,
+  employeesByDepartment,
+} = require("./utils/employees");
+const getRoles = require("./utils/roles");
+const getDepartments = require("./utils/departments");
 
 const initialQuestion = [
   {
@@ -10,8 +14,9 @@ const initialQuestion = [
     message: "What would you like to do?",
     choices: [
       "View All Employees",
-      "Add Employee",
-      "Update Employee Role",
+      "View Employees By Manager",
+      "View Employees By Department",
+      "Update Employee's Manager",
       "View All Roles",
       "Add Role",
       "View All Departments",
@@ -21,18 +26,27 @@ const initialQuestion = [
   },
 ];
 
+const promptUser = () => {
+  return inquirer.prompt(initialQuestion).then(({ company }) => {
+    if (company === "View All Employees") {
+      getEmployees();
+    }
+    if (company === "View Employees By Manager") {
+      employeesByManager();
+    }
+    if (company === "View Employees By Department") {
+      employeesByDepartment();
+    }
+    if (company === "View All Roles") {
+      getRoles();
+    }
+    if (company === "View All Departments") {
+      getDepartments();
+    }
+    if (company === "Quit") {
+      console.log("GoodBye");
+    }
+  });
+};
 
-inquirer.prompt(initialQuestion).then(({ company }) => {
-  if (company === "View All Employees") {
-    getEmployees();
-  }
-  if (company === "View All Roles") {
-    getRoles();
-  }
-  if (company === "View All Departments") {
-    getDepartments();
-  }
-  if (company === "Quit") {
-    console.log("GoodBye");
-  }
-});
+promptUser();
