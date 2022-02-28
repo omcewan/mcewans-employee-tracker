@@ -20,7 +20,8 @@ async function getEmployees() {
   ON M.id = E.manager_id`;
 
   const [results] = await connection.execute(sql);
-  const allEmployees = cTable.getTable(results);
+  // console.log(results[0].first_name)
+  const allEmployees = cTable.getTable("\n\n\n\n\n\n\nCurrently Viewing All Employees",results);
   console.log(allEmployees);
   connection.end();
 }

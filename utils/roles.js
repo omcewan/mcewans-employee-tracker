@@ -45,7 +45,15 @@ async function addRole(role, departmentid, salary) {
 
   const [results] = await connection.execute(sql[1]);
   const allDepartments = cTable.getTable(results);
-  console.log(allDepartments);
+  console.log(`
+  
+  
+  
+  
+  
+  
+  
+  ${allDepartments}`);
   connection.end();
 }
 
