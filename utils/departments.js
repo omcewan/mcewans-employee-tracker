@@ -11,7 +11,7 @@ async function getDepartments() {
 
   const sql = `SELECT departments.id, departments.department_name AS department FROM departments`;
   const [results] = await connection.execute(sql);
-  const allDepartments = cTable.getTable(results);
+  const allDepartments = cTable.getTable("\n\nCurrently Viewing All Departments",results);
   console.log(allDepartments);
   connection.end();
 }

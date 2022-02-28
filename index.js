@@ -51,7 +51,12 @@ const promptUser = () => {
       inquirer
         .prompt(addEmployeeQuestions)
         .then(({ first, last, role, manager }) => {
-          addEmployee(first, last, role, manager);
+          return addEmployee(first, last, role, manager);
+        })
+        .then((newEmployee) => {
+          console.log(
+            `${newEmployee[0].first_name} ${newEmployee[0].last_name} was added to the database as a(n) ${newEmployee[0].title} under ${newEmployee[0].manager}!`
+          );
         })
         .then(() => {
           promptUser();

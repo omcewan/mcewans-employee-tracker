@@ -14,8 +14,8 @@ async function getRoles() {
   LEFT JOIN departments
   ON roles.department_id = departments.id`;
 
-  const [rows] = await connection.execute(sql);
-  const tableAllRoles = cTable.getTable(rows);
+  const [results] = await connection.execute(sql);
+  const tableAllRoles = cTable.getTable("\n\nCurrently Viewing All Roles", results);
   console.log(tableAllRoles);
   connection.end();
 }
