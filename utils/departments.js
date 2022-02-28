@@ -42,4 +42,30 @@ async function addDepartment(department) {
   connection.end();
 }
 
-module.exports = { getDepartments, addDepartment };
+async function deleteDepartment(department) {
+  const connection = await mysql.createConnection({
+    host: "127.0.0.1",
+    user: "root",
+    password: "mountain_DECANT2whitish",
+    database: "my_company",
+  });
+
+  const sql = [
+    `DELETE FROM departments
+  WHERE id = ${department} `,
+    `SELECT departments.id, departments.department_name AS department FROM departments`,
+  ];
+
+  const [results] = await connection.execute(sql[0]);
+
+  if (!results.affectedRows) {
+    console.log({ message: "Employee ID Does Not Exist!" });
+  } else {
+    const [results] = await connection.execute(sql[1]);
+    const allDepartments = cTable.getTable(results);
+    console.log(allDepartments);
+  }
+  connection.end();
+}
+
+module.exports = { getDepartments, addDepartment, deleteDepartment };

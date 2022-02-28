@@ -14,6 +14,9 @@ const initialQuestion = [
       "Add An Employee",
       "Update Employee's Role",
       "Update Employee's Manager",
+      "Delete An Employee",
+      "Delete A Department",
+      "Delete A Role",
       "Quit",
     ],
   },
@@ -212,11 +215,29 @@ const deleteEmployeeQuestion = [
   },
 ];
 
+const deleteDepartmentQuestion = [
+  {
+    type: "input",
+    name: "department",
+    message: "Please enter the ID for the department you would like to delete!",
+    validate: (department) => {
+      if (department) {
+        return true;
+      } else {
+        console.log("Please enter a valid ID!");
+        return false;
+      }
+    },
+  },
+];
+
 module.exports = {
   initialQuestion,
   addDepartmentQuestion,
   updateManagerQuestions,
   addRoleQuestions,
   addEmployeeQuestions,
-  updateRoleQuestions
+  updateRoleQuestions,
+  deleteEmployeeQuestion,
+  deleteDepartmentQuestion
 };

@@ -9,7 +9,7 @@ const {
   updateEmployeeRole,
 } = require("./utils/employees");
 const { getRoles, addRole } = require("./utils/roles");
-const { getDepartments, addDepartment } = require("./utils/departments");
+const { getDepartments, addDepartment, deleteDepartment } = require("./utils/departments");
 const {
   initialQuestion,
   addDepartmentQuestion,
@@ -17,6 +17,8 @@ const {
   addRoleQuestions,
   addEmployeeQuestions,
   updateRoleQuestions,
+  deleteEmployeeQuestion,
+  deleteDepartmentQuestion,
 } = require("./utils/questions");
 
 const promptUser = () => {
@@ -61,11 +63,19 @@ const promptUser = () => {
         });
     }
     if (company === "Update Employee's Role") {
-      inquirer
-        .prompt(updateRoleQuestions)
-        .then(({ employee, role}) => {
-          updateEmployeeRole(employee, role);
-        });
+      inquirer.prompt(updateRoleQuestions).then(({ employee, role }) => {
+        updateEmployeeRole(employee, role);
+      });
+    }
+    if (company === "Delete An Employee") {
+      inquirer.prompt(deleteEmployeeQuestion).then(({ employee }) => {
+        deleteEmployee(employee);
+      });
+    }
+    if (company === "Delete A Department") {
+      inquirer.prompt(deleteDepartmentQuestion).then(({ department }) => {
+        deleteDepartment(department);
+      });
     }
     if (company === "Quit") {
       console.log("GoodBye");
