@@ -83,37 +83,36 @@ async function updateEmployee(employee, manager) {
     database: "my_company",
   });
 
-  const sql = `UPDATE employees
+  const sql = [
+    `UPDATE employees
   SET manager_id = ${manager}
-  WHERE id = ${employee} `;
+  WHERE id = ${employee}`,
+    `SELECT E.id, E.first_name, E.last_name, roles.title AS title,
+  departments.department_name AS department, roles.salary,  CONCAT (M.first_name,' ', M.last_name) AS manager
+  FROM employees E
+  LEFT JOIN roles 
+  ON E.role_id = roles.id
+  LEFT JOIN departments
+  ON roles.department_id = departments.id
+  LEFT JOIN employees M
+  ON M.id = E.manager_id
+  ORDER BY manager`,
+  ];
 
   // TODO: fix the error that shows up with an invalid manager id
-  const [results] = await connection.execute(sql);
+  const [results] = await connection.execute(sql[0]);
 
   if (!results.affectedRows) {
     console.log({ message: "Employee ID Does Not Exist!" });
   } else {
-    const sql = `SELECT E.id, E.first_name, E.last_name, roles.title AS title,
-    departments.department_name AS department, roles.salary,  CONCAT (M.first_name,' ', M.last_name) AS manager
-    FROM employees E
-    LEFT JOIN roles 
-    ON E.role_id = roles.id
-    LEFT JOIN departments
-    ON roles.department_id = departments.id
-    LEFT JOIN employees M
-    ON M.id = E.manager_id
-    ORDER BY manager`;
-
-    const [results] = await connection.execute(sql);
+    const [results] = await connection.execute(sql[1]);
     const employeesByManager = cTable.getTable(results);
     console.log(employeesByManager);
   }
   connection.end();
 }
 
-async function addEmployee() {
-  
-}
+async function addEmployee() {}
 
 async function deleteEmployee(employee) {
   const connection = await mysql.createConnection({

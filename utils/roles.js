@@ -17,7 +17,36 @@ async function getRoles() {
   const [rows] = await connection.execute(sql);
   const tableAllRoles = cTable.getTable(rows);
   console.log(tableAllRoles);
-  connection.end()
+  connection.end();
 }
 
-module.exports = getRoles;
+async function addRole(role, departmentid, salary) {
+  const connection = await mysql.createConnection({
+    host: "127.0.0.1",
+    user: "root",
+    password: "mountain_DECANT2whitish",
+    database: "my_company",
+  });
+
+  const sql = [
+    `INSERT INTO roles (title, department_id, salary)
+  VALUES ('${role}', ${departmentid}, ${salary})`,
+    `SELECT roles.id, roles.title, departments.department_name AS department, roles.salary
+  FROM roles
+  LEFT JOIN departments
+  ON roles.department_id = departments.id`,
+  ];
+
+  // TODO: fix error with duplicates
+  const [result] = await connection.query(sql[0]);
+  if (!result.affectedRows) {
+    console.log({ message: "Department already exists!" });
+  }
+
+  const [results] = await connection.execute(sql[1]);
+  const allDepartments = cTable.getTable(results);
+  console.log(allDepartments);
+  connection.end();
+}
+
+module.exports = { getRoles, addRole };

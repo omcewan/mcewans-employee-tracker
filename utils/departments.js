@@ -24,13 +24,16 @@ async function addDepartment(department) {
     database: "my_company",
   });
 
-  const sql = [`INSERT INTO departments (department_name)
-  VALUES ('${department}')`, `SELECT departments.id, departments.department_name AS department FROM departments`];
+  const sql = [
+    `INSERT INTO departments (department_name)
+  VALUES ('${department}')`,
+    `SELECT departments.id, departments.department_name AS department FROM departments`,
+  ];
 
   // TODO: fix error with duplicates
-  const [result] = await connection.query(sql[0])
+  const [result] = await connection.query(sql[0]);
   if (!result.affectedRows) {
-    console.log({message: "Department already exists!"})
+    console.log({ message: "Department already exists!" });
   }
 
   const [results] = await connection.execute(sql[1]);
