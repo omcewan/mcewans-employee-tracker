@@ -3,16 +3,18 @@ const {
   getEmployees,
   employeesByManager,
   employeesByDepartment,
-  updateEmployee,
+  updateEmployeeManager,
   deleteEmployee,
+  addEmployee,
 } = require("./utils/employees");
 const { getRoles, addRole } = require("./utils/roles");
 const { getDepartments, addDepartment } = require("./utils/departments");
 const {
   initialQuestion,
   addDepartmentQuestion,
-  updateEmployeeQuestion,
+  updateManagerQuestions,
   addRoleQuestions,
+  addEmployeeQuestions,
 } = require("./utils/questions");
 
 const promptUser = () => {
@@ -27,8 +29,8 @@ const promptUser = () => {
       employeesByDepartment();
     }
     if (company === "Update Employee's Manager") {
-      inquirer.prompt(updateEmployeeQuestion).then(({ employee, manager }) => {
-        updateEmployee(employee, manager);
+      inquirer.prompt(updateManagerQuestions).then(({ employee, manager }) => {
+        updateEmployeeManager(employee, manager);
       });
     }
     if (company === "View All Roles") {
@@ -47,6 +49,13 @@ const promptUser = () => {
         .prompt(addRoleQuestions)
         .then(({ role, departmentId, salary }) => {
           addRole(role, departmentId, salary);
+        });
+    }
+    if (company === "Add An Employee") {
+      inquirer
+        .prompt(addEmployeeQuestions)
+        .then(({ first, last, role, manager }) => {
+          addEmployee(first, last, role, manager);
         });
     }
     if (company === "Quit") {

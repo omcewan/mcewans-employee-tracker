@@ -75,7 +75,7 @@ async function employeesByDepartment() {
   connection.end();
 }
 
-async function updateEmployee(employee, manager) {
+async function updateEmployeeManager(employee, manager) {
   const connection = await mysql.createConnection({
     host: "127.0.0.1",
     user: "root",
@@ -112,7 +112,38 @@ async function updateEmployee(employee, manager) {
   connection.end();
 }
 
-async function addEmployee() {}
+async function addEmployee(first, last, role, manager) {
+  const connection = await mysql.createConnection({
+    host: "127.0.0.1",
+    user: "root",
+    password: "mountain_DECANT2whitish",
+    database: "my_company",
+  });
+
+  const sql = [
+    `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+  VALUES ('${first}', '${last}', ${role}, ${manager})`,
+    `SELECT E.id, E.first_name, E.last_name, roles.title AS title,
+    departments.department_name AS department, roles.salary, CONCAT (M.first_name,' ', M.last_name) AS manager
+    FROM employees E
+    LEFT JOIN roles 
+    ON E.role_id = roles.id
+    LEFT JOIN departments
+    ON roles.department_id = departments.id
+    LEFT JOIN employees M
+    ON M.id = E.manager_id`,
+  ];
+
+  const [result] = await connection.query(sql[0]);
+  // if (!result.affectedRows) {
+  //   console.log({ message: "already exists!" });
+  // }
+
+  const [results] = await connection.execute(sql[1]);
+  const allEmployees = cTable.getTable(results);
+  console.log(allEmployees);
+  connection.end();
+}
 
 async function deleteEmployee(employee) {
   const connection = await mysql.createConnection({
@@ -151,6 +182,7 @@ module.exports = {
   getEmployees,
   employeesByManager,
   employeesByDepartment,
-  updateEmployee,
+  updateEmployeeManager,
   deleteEmployee,
+  addEmployee,
 };
