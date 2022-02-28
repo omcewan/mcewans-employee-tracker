@@ -109,7 +109,8 @@ const addEmployeeQuestions = [
   {
     type: "input",
     name: "role",
-    message: "Please enter the id for the role you would like to add to this employee!",
+    message:
+      "Please enter the id for the role you would like to add to this employee!",
     validate: (role) => {
       if (role) {
         return true;
@@ -122,7 +123,8 @@ const addEmployeeQuestions = [
   {
     type: "input",
     name: "manager",
-    message: "Please enter the manager id you would like to add to this employee!",
+    message:
+      "Please enter the manager id you would like to add to this employee!",
     validate: (manager) => {
       if (manager) {
         return true;
@@ -134,7 +136,36 @@ const addEmployeeQuestions = [
   },
 ];
 
-const updateRoleQuestions
+const updateRoleQuestions = [
+  {
+    type: "input",
+    name: "employee",
+    message: "Please enter the ID for the employee you would like to update!",
+    validate: (employee) => {
+      if (employee) {
+        return true;
+      } else {
+        console.log("Please enter a valid ID!");
+        return false;
+      }
+    },
+  },
+  {
+    type: "input",
+    name: "role",
+    message:
+      "Please enter the id for the role you would like to add to this employee!",
+    validate: (role) => {
+      if (role) {
+        return true;
+      } else {
+        console.log("Please enter a role id!");
+        return false;
+      }
+    },
+  },
+];
+
 const updateManagerQuestions = [
   {
     type: "input",
@@ -187,4 +218,5 @@ module.exports = {
   updateManagerQuestions,
   addRoleQuestions,
   addEmployeeQuestions,
+  updateRoleQuestions
 };

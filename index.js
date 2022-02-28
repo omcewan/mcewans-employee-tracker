@@ -6,6 +6,7 @@ const {
   updateEmployeeManager,
   deleteEmployee,
   addEmployee,
+  updateEmployeeRole,
 } = require("./utils/employees");
 const { getRoles, addRole } = require("./utils/roles");
 const { getDepartments, addDepartment } = require("./utils/departments");
@@ -15,6 +16,7 @@ const {
   updateManagerQuestions,
   addRoleQuestions,
   addEmployeeQuestions,
+  updateRoleQuestions,
 } = require("./utils/questions");
 
 const promptUser = () => {
@@ -56,6 +58,13 @@ const promptUser = () => {
         .prompt(addEmployeeQuestions)
         .then(({ first, last, role, manager }) => {
           addEmployee(first, last, role, manager);
+        });
+    }
+    if (company === "Update Employee's Role") {
+      inquirer
+        .prompt(updateRoleQuestions)
+        .then(({ employee, role}) => {
+          updateEmployeeRole(employee, role);
         });
     }
     if (company === "Quit") {
