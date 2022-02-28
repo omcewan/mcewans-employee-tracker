@@ -8,8 +8,12 @@ const {
   addEmployee,
   updateEmployeeRole,
 } = require("./utils/employees");
-const { getRoles, addRole } = require("./utils/roles");
-const { getDepartments, addDepartment, deleteDepartment } = require("./utils/departments");
+const { getRoles, addRole, deleteRole } = require("./utils/roles");
+const {
+  getDepartments,
+  addDepartment,
+  deleteDepartment,
+} = require("./utils/departments");
 const {
   initialQuestion,
   addDepartmentQuestion,
@@ -19,6 +23,7 @@ const {
   updateRoleQuestions,
   deleteEmployeeQuestion,
   deleteDepartmentQuestion,
+  deleteRoleQuestion,
 } = require("./utils/questions");
 
 const promptUser = () => {
@@ -75,6 +80,11 @@ const promptUser = () => {
     if (company === "Delete A Department") {
       inquirer.prompt(deleteDepartmentQuestion).then(({ department }) => {
         deleteDepartment(department);
+      });
+    }
+    if (company === "Delete A Role") {
+      inquirer.prompt(deleteRoleQuestion).then(({ role }) => {
+        deleteRole(role);
       });
     }
     if (company === "Quit") {

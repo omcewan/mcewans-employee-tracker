@@ -49,4 +49,33 @@ async function addRole(role, departmentid, salary) {
   connection.end();
 }
 
-module.exports = { getRoles, addRole };
+async function deleteRole(role) {
+  const connection = await mysql.createConnection({
+    host: "127.0.0.1",
+    user: "root",
+    password: "mountain_DECANT2whitish",
+    database: "my_company",
+  });
+
+  const sql = [
+    `DELETE FROM roles
+  WHERE id = ${role} `,
+    `SELECT roles.id, roles.title, departments.department_name AS department, roles.salary
+  FROM roles
+  LEFT JOIN departments
+  ON roles.department_id = departments.id`,
+  ];
+
+  const [results] = await connection.execute(sql[0]);
+
+  if (!results.affectedRows) {
+    console.log({ message: "Employee ID Does Not Exist!" });
+  } else {
+    const [results] = await connection.execute(sql[1]);
+    const allDepartments = cTable.getTable(results);
+    console.log(allDepartments);
+  }
+  connection.end();
+}
+
+module.exports = { getRoles, addRole, deleteRole };

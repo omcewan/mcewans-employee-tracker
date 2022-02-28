@@ -231,6 +231,22 @@ const deleteDepartmentQuestion = [
   },
 ];
 
+const deleteRoleQuestion = [
+  {
+    type: "input",
+    name: "role",
+    message: "Please enter the ID for the role you would like to delete!",
+    validate: (role) => {
+      if (role) {
+        return true;
+      } else {
+        console.log("Please enter a valid ID!");
+        return false;
+      }
+    },
+  },
+];
+
 module.exports = {
   initialQuestion,
   addDepartmentQuestion,
@@ -239,5 +255,6 @@ module.exports = {
   addEmployeeQuestions,
   updateRoleQuestions,
   deleteEmployeeQuestion,
-  deleteDepartmentQuestion
+  deleteDepartmentQuestion,
+  deleteRoleQuestion,
 };
