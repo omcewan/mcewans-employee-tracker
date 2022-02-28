@@ -4,10 +4,10 @@ const {
   employeesByManager,
   employeesByDepartment,
   updateEmployee,
+  deleteEmployee,
 } = require("./utils/employees");
 const getRoles = require("./utils/roles");
-const getDepartments = require("./utils/departments");
-const { up } = require("inquirer/lib/utils/readline");
+const {getDepartments, addDepartment} = require("./utils/departments");
 
 const initialQuestion = [
   {
@@ -15,17 +15,37 @@ const initialQuestion = [
     name: "company",
     message: "What would you like to do?",
     choices: [
-      "View All Employees",
-      "View Employees By Manager",
-      "View Employees By Department",
-      "Update Employee's Manager",
-      "View All Roles",
-      "Add Role",
       "View All Departments",
+      "View All Roles",
+      "View All Employees",
+      "View Employees By Department",
+      "View Employees By Manager",
+      "Add A Department",
+      "Add A Role",
+      "Add An Employee",
+      "Update Employee's Role",
+      "Update Employee's Manager",
+      "Add Role",
       "Add Department",
       "Quit",
     ],
   },
+];
+
+const addDepartmentQuestion = [
+  {
+    type: "input",
+    name: "department",
+    message: "Please Enter the name of a Department you would like to add!",
+    validate: (department) =>  {
+      if (department) {
+        return true;
+      } else {
+        console.log("Please enter a Department name!");
+        return false;
+      }
+    }
+  }
 ];
 
 const updateEmployeeQuestion = [
@@ -37,7 +57,7 @@ const updateEmployeeQuestion = [
       if (employee) {
         return true;
       } else {
-        console.log("Please enter an ID");
+        console.log("Please enter a valid ID!");
         return false;
       }
     },
@@ -51,12 +71,28 @@ const updateEmployeeQuestion = [
       if (manager) {
         return true;
       } else {
-        console.log("Please enter a value!");
+        console.log("Please enter a valid ID!");
         return false;
       }
     },
   },
 ];
+
+const deleteEmployeeQuestion = [
+  {
+    type: "input",
+    name: "employee",
+    message: "Please enter the ID for the employee you would like to delete!",
+    validate: (employee) => {
+      if (employee) {
+        return true;
+      } else {
+        console.log("Please enter a valid ID!");
+        return false;
+      }
+    }
+  }
+]
 
 const promptUser = () => {
   return inquirer.prompt(initialQuestion).then(({ company }) => {
@@ -79,6 +115,11 @@ const promptUser = () => {
     }
     if (company === "View All Departments") {
       getDepartments();
+    }
+    if (company === "Add A Department") {
+      inquirer.prompt(addDepartmentQuestion).then(({department}) => {
+        addDepartment(department);
+      });
     }
     if (company === "Quit") {
       console.log("GoodBye");
