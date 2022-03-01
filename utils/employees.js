@@ -25,8 +25,8 @@ async function getEmployees() {
     "\n\nCurrently Viewing All Employees",
     results
   );
-  console.log(allEmployees);
   connection.end();
+  return allEmployees;
 }
 
 async function employeesByManager() {
@@ -53,8 +53,8 @@ async function employeesByManager() {
     "\n\nCurrently Viewing All Employees By Manager",
     results
   );
-  console.log(employeesByManager);
   connection.end();
+  return employeesByManager;
 }
 
 async function employeesByDepartment() {
@@ -81,8 +81,8 @@ async function employeesByDepartment() {
     "\n\nCurrently Viewing All Employees By Department",
     results
   );
-  console.log(employeesByDepartment);
   connection.end();
+  return employeesByDepartment;
 }
 
 async function updateEmployeeManager(employee, manager) {
@@ -93,33 +93,27 @@ async function updateEmployeeManager(employee, manager) {
     database: "my_company",
   });
 
-  const sql = [
-    `UPDATE employees
+  const sql = `UPDATE employees
   SET manager_id = ${manager}
-  WHERE id = ${employee}`,
-    `SELECT E.id, E.first_name, E.last_name, roles.title AS title,
-  departments.department_name AS department, roles.salary,  CONCAT (M.first_name,' ', M.last_name) AS manager
-  FROM employees E
-  LEFT JOIN roles 
-  ON E.role_id = roles.id
-  LEFT JOIN departments
-  ON roles.department_id = departments.id
-  LEFT JOIN employees M
-  ON M.id = E.manager_id
-  ORDER BY manager`,
-  ];
+  WHERE id = ${employee}`;
+
+  const sql1 = `SELECT e.first_name, e.last_name, CONCAT(m.first_name,' ',m.last_name) as manager FROM employees e
+  left join employees m
+  on m.id = e.manager_id
+  where e.id = ${employee}`;
 
   // TODO: fix the error that shows up with an invalid manager id
-  const [results] = await connection.execute(sql[0]);
+  const [updated] = await connection.execute(sql);
+  
+  const [newManager] = await connection.execute(sql1);
 
-  if (!results.affectedRows) {
-    console.log({ message: "Employee ID Does Not Exist!" });
+  if (!updated.affectedRows) {
+    connection.end();
+    return;
   } else {
-    const [results] = await connection.execute(sql[1]);
-    const employeesByManager = cTable.getTable(results);
-    console.log(employeesByManager);
+    connection.end();
+    return newManager;
   }
-  connection.end();
 }
 
 async function updateEmployeeRole(employee, role) {

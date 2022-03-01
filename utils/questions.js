@@ -175,10 +175,10 @@ const updateManagerQuestions = [
     name: "employee",
     message: "Please enter the ID for the employee you would like to update!",
     validate: (employee) => {
-      if (employee) {
+      if (employee == +employee) {
         return true;
       } else {
-        console.log("Please enter a valid ID!");
+        console.log("Please enter a valid ID number!")
         return false;
       }
     },
@@ -189,7 +189,7 @@ const updateManagerQuestions = [
     message:
       "Please enter the ID for the manager you would like to assign the employee to!",
     validate: (manager) => {
-      if (manager) {
+      if (manager == +manager) {
         return true;
       } else {
         console.log("Please enter a valid ID!");

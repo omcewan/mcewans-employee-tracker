@@ -30,21 +30,33 @@ const {
 const promptUser = () => {
   return inquirer.prompt(initialQuestion).then(({ company }) => {
     if (company === "View All Employees") {
-      getEmployees().then(() => {
-        promptUser();
-      });
+      getEmployees()
+        .then((allEmployees) => {
+          console.log(allEmployees);
+        })
+        .then(() => {
+          promptUser();
+        });
     }
 
     if (company === "View All Employees By Manager") {
-      employeesByManager().then(() => {
-        promptUser();
-      });
+      employeesByManager()
+        .then((employeesByManager) => {
+          console.log(employeesByManager);
+        })
+        .then(() => {
+          promptUser();
+        });
     }
 
     if (company === "View All Employees By Department") {
-      employeesByDepartment().then(() => {
-        promptUser();
-      });
+      employeesByDepartment()
+        .then((employeesByDepartment) => {
+          console.log(employeesByDepartment);
+        })
+        .then(() => {
+          promptUser();
+        });
     }
 
     if (company === "Add An Employee") {
@@ -67,9 +79,24 @@ const promptUser = () => {
       inquirer
         .prompt(updateManagerQuestions)
         .then(({ employee, manager }) => {
-          updateEmployeeManager(employee, manager);
+          return updateEmployeeManager(employee, manager);
+        })
+        .then((newManager) => {
+          if (newManager) {
+            console.log(
+              `${newManager[0].first_name} ${newManager[0].last_name} manager was changed to ${newManager[0].manager}!`
+            );
+          } else {
+            console.log("Employee ID Does Not Exist!");
+          }
         })
         .then(() => {
+          promptUser();
+        })
+        .catch(() => {
+          console.log(
+            `The Manager ID does not exist! Please Choose a valid ID!`
+          );
           promptUser();
         });
     }
@@ -93,13 +120,16 @@ const promptUser = () => {
         })
         .then((removedEmployee) => {
           if (removedEmployee) {
-            console.log(`${removedEmployee[0].first_name} ${removedEmployee[0].last_name} was removed from the database!`)
+            console.log(
+              `${removedEmployee[0].first_name} ${removedEmployee[0].last_name} was removed from the database!`
+            );
           } else {
-            console.log("Employee ID Does Not Exist!")
+            console.log("Employee ID Does Not Exist!");
           }
-        }).then(() => {
-          promptUser();
         })
+        .then(() => {
+          promptUser();
+        });
     }
 
     if (company === "View All Departments") {
