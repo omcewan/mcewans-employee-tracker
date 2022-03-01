@@ -30,55 +30,65 @@ const {
 const promptUser = () => {
   return inquirer.prompt(initialQuestion).then(({ company }) => {
     if (company === "View All Employees") {
-      getEmployees()
+      return getEmployees()
         .then((allEmployees) => {
           console.log(allEmployees);
         })
         .then(() => {
-          promptUser();
+          return promptUser();
         });
     }
 
     if (company === "View All Employees By Manager") {
-      employeesByManager()
+      return employeesByManager()
         .then((employeesByManager) => {
           console.log(employeesByManager);
         })
         .then(() => {
-          promptUser();
+          return promptUser();
         });
     }
 
     if (company === "View All Employees By Department") {
-      employeesByDepartment()
+      return employeesByDepartment()
         .then((employeesByDepartment) => {
           console.log(employeesByDepartment);
         })
         .then(() => {
-          promptUser();
+          return promptUser();
         });
     }
 
     if (company === "Add An Employee") {
-      inquirer
-        .prompt(addEmployeeQuestions)
+      return reference()
+        .then((referenceTable) => {
+          console.log(referenceTable[0]);
+          console.log(referenceTable[1]);
+        })
+        .then(() => {
+          return inquirer.prompt(addEmployeeQuestions);
+        })
         .then(({ first, last, role, manager }) => {
           return addEmployee(first, last, role, manager);
         })
         .then((newEmployee) => {
           console.log(
-            `${newEmployee[0].first_name} ${newEmployee[0].last_name} was added to the database as a(n) ${newEmployee[0].title} under ${newEmployee[0].manager}!`
+            `\n${newEmployee[0].first_name} ${newEmployee[0].last_name} was added to the database as a(n) ${newEmployee[0].title} under ${newEmployee[0].manager}\n!`
           );
         })
         .then(() => {
-          promptUser();
+          return promptUser();
+        })
+        .catch((err) => {
+          console.log(`\nThe Manager ID or Role entered does not exist!\n`);
+          return promptUser();
         });
     }
 
     if (company === "Update Employee's Manager") {
       return reference()
         .then((referenceTable) => {
-          console.log(referenceTable);
+          console.log(referenceTable[0]);
         })
         .then(() => {
           return inquirer.prompt(updateManagerQuestions);
@@ -89,63 +99,74 @@ const promptUser = () => {
         .then((newManager) => {
           if (newManager) {
             console.log(
-              `${newManager[0].first_name} ${newManager[0].last_name} manager was changed to ${newManager[0].manager}!`
+              `\n${newManager[0].first_name} ${newManager[0].last_name}'s manager was changed to ${newManager[0].manager}!\n`
             );
           } else {
-            console.log("Employee ID Does Not Exist!");
+            console.log("\nEmployee ID Does Not Exist!\n");
           }
         })
         .then(() => {
           return promptUser();
         })
         .catch((err) => {
-          console.log("The Manager ID entered does not exist!");
+          console.log("\nThe Manager ID entered does not exist!\n");
           // console.error(err.sqlMessage);
           return promptUser();
         });
     }
 
     if (company === "Update Employee's Role") {
-      inquirer
-        .prompt(updateRoleQuestions)
+      return reference()
+        .then((referenceTable) => {
+          console.log(referenceTable[1]);
+        })
+        .then(() => {
+          return inquirer.prompt(updateRoleQuestions);
+        })
         .then(({ employee, role }) => {
           return updateEmployeeRole(employee, role);
         })
         .then((updatedRole) => {
           if (updatedRole) {
             console.log(
-              `${updatedRole[0].first_name} ${updatedRole[0].last_name} role was changed to ${updatedRole[0].title}!`
+              `\n${updatedRole[0].first_name} ${updatedRole[0].last_name} role was changed to ${updatedRole[0].title}!\n`
             );
           } else {
-            console.log("Employee ID Does Not Exist!");
+            console.log("\nEmployee ID Does Not Exist!\n");
           }
         })
         .then(() => {
-          promptUser();
+          return promptUser();
         })
         .catch((err) => {
-          console.error(err.sqlMessage);
-          promptUser();
+          console.log("\nThe Role chosen does not exist!");
+          // console.error(err.sqlMessage);
+          return promptUser();
         });
     }
 
     if (company === "Delete An Employee") {
-      inquirer
-        .prompt(deleteEmployeeQuestion)
+      return reference()
+        .then((referenceTable) => {
+          console.log(referenceTable[2]);
+        })
+        .then(() => {
+          return inquirer.prompt(deleteEmployeeQuestion);
+        })
         .then(({ employee }) => {
           return deleteEmployee(employee);
         })
         .then((removedEmployee) => {
           if (removedEmployee) {
             console.log(
-              `${removedEmployee[0].first_name} ${removedEmployee[0].last_name} was removed from the database!`
+              `\n${removedEmployee[0].first_name} ${removedEmployee[0].last_name} was removed from the database!\n`
             );
           } else {
-            console.log("Employee ID Does Not Exist!");
+            console.log("\nEmployee ID Does Not Exist!\n");
           }
         })
         .then(() => {
-          promptUser();
+          return promptUser();
         });
     }
 

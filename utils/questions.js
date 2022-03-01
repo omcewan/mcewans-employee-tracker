@@ -113,9 +113,9 @@ const addEmployeeQuestions = [
     type: "input",
     name: "role",
     message:
-      "Please enter the id for the role you would like to add to this employee!",
+      "Please enter the id for the role you would like to add to this employee! Use above tables as references.",
     validate: (role) => {
-      if (role) {
+      if (role == +role) {
         return true;
       } else {
         console.log("Please enter a role id!");
@@ -127,9 +127,9 @@ const addEmployeeQuestions = [
     type: "input",
     name: "manager",
     message:
-      "Please enter the manager id you would like to add to this employee!",
+      "Please enter the manager id you would like to add to this employee! Use above tables as references!",
     validate: (manager) => {
-      if (manager) {
+      if (manager == +manager) {
         return true;
       } else {
         console.log("Please enter a manager id!");
@@ -145,7 +145,7 @@ const updateRoleQuestions = [
     name: "employee",
     message: "Please enter the ID for the employee you would like to update!",
     validate: (employee) => {
-      if (employee) {
+      if (employee == +employee) {
         return true;
       } else {
         console.log("Please enter a valid ID!");
@@ -157,9 +157,9 @@ const updateRoleQuestions = [
     type: "input",
     name: "role",
     message:
-      "Please enter the id for the role you would like to add to this employee!",
+      "Please enter the ID for the role you would like to add to this employee!",
     validate: (role) => {
-      if (role) {
+      if (role == +role) {
         return true;
       } else {
         console.log("Please enter a role id!");
@@ -203,9 +203,9 @@ const deleteEmployeeQuestion = [
   {
     type: "input",
     name: "employee",
-    message: "Please enter the ID for the employee you would like to delete!",
+    message: "Please enter the ID for the employee you would like to delete! Use the above table as a reference",
     validate: (employee) => {
-      if (employee) {
+      if (employee == +employee) {
         return true;
       } else {
         console.log("Please enter a valid ID!");
