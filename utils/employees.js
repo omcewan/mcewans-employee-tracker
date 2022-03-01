@@ -16,7 +16,7 @@ async function getEmployees() {
   ON E.role_id = roles.id
   LEFT JOIN departments
   ON roles.department_id = departments.id
-  INNER JOIN employees M
+  LEFT JOIN employees M
   ON M.id = E.manager_id`;
 
   const [results] = await connection.execute(sql);
@@ -104,7 +104,7 @@ async function updateEmployeeManager(employee, manager) {
 
   // TODO: fix the error that shows up with an invalid manager id
   const [updated] = await connection.execute(sql);
-  
+
   const [newManager] = await connection.execute(sql1);
 
   if (!updated.affectedRows) {
@@ -124,32 +124,22 @@ async function updateEmployeeRole(employee, role) {
     database: "my_company",
   });
 
-  const sql = [
-    `UPDATE employees
-  SET role_id = ${role}
-  WHERE id = ${employee}`,
-    `SELECT E.id, E.first_name, E.last_name, roles.title AS title,
-  departments.department_name AS department, roles.salary,  CONCAT (M.first_name,' ', M.last_name) AS manager
-  FROM employees E
-  LEFT JOIN roles 
-  ON E.role_id = roles.id
-  LEFT JOIN departments
-  ON roles.department_id = departments.id
-  LEFT JOIN employees M
-  ON M.id = E.manager_id`,
-  ];
+  const sql = `UPDATE employees SET role_id = ${role} WHERE id = ${employee}`;
+
+  const sql1 = `SELECT E.first_name, E.last_name, roles.title AS title FROM employees E LEFT JOIN roles ON E.role_id = roles.id WHERE E.id = ${employee}`;
 
   // TODO: fix the error that shows up with an invalid manager id
-  const [results] = await connection.execute(sql[0]);
+  const [update] = await connection.execute(sql);
 
-  if (!results.affectedRows) {
-    console.log({ message: "Employee ID Does Not Exist!" });
+  const [newRole] = await connection.execute(sql1);
+
+  if (!update.affectedRows) {
+    connection.end();
+    return;
   } else {
-    const [results] = await connection.execute(sql[1]);
-    const allEmployees = cTable.getTable(results);
-    console.log(allEmployees);
+    connection.end();
+    return newRole;
   }
-  connection.end();
 }
 
 async function addEmployee(first, last, role, manager) {

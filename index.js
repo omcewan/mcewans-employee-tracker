@@ -98,18 +98,31 @@ const promptUser = () => {
             `The Manager ID does not exist! Please Choose a valid ID!`
           );
           promptUser();
-        });
+        })
     }
 
     if (company === "Update Employee's Role") {
       inquirer
         .prompt(updateRoleQuestions)
         .then(({ employee, role }) => {
-          updateEmployeeRole(employee, role);
+          return updateEmployeeRole(employee, role);
+        })
+        .then((updatedRole) => {
+          if (updatedRole) {
+            console.log(
+              `${updatedRole[0].first_name} ${updatedRole[0].last_name} role was changed to ${updatedRole[0].title}!`
+            );
+          } else {
+            console.log("Employee ID Does Not Exist!");
+          }
         })
         .then(() => {
           promptUser();
-        });
+        })
+        .catch(() => {
+          console.log("The role does not exist")
+          promptUser();
+        })
     }
 
     if (company === "Delete An Employee") {
