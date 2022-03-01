@@ -11,9 +11,12 @@ async function getDepartments() {
 
   const sql = `SELECT departments.id, departments.department_name AS department FROM departments`;
   const [results] = await connection.execute(sql);
-  const allDepartments = cTable.getTable("\n\nCurrently Viewing All Departments",results);
-  console.log(allDepartments);
+  const allDepartments = cTable.getTable(
+    "\n\nCurrently Viewing All Departments",
+    results
+  );
   connection.end();
+  return allDepartments
 }
 
 async function addDepartment(department) {
@@ -27,19 +30,21 @@ async function addDepartment(department) {
   const sql = [
     `INSERT INTO departments (department_name)
   VALUES ('${department}')`,
-    `SELECT departments.id, departments.department_name AS department FROM departments`,
+    `SELECT departments.department_name AS department FROM departments WHERE departments.department_name = '${department}'`,
   ];
 
   // TODO: fix error with duplicates
-  const [result] = await connection.query(sql[0]);
-  if (!result.affectedRows) {
-    console.log({ message: "Department already exists!" });
-  }
+  const [inserted] = await connection.query(sql[0]);
 
-  const [results] = await connection.execute(sql[1]);
-  const allDepartments = cTable.getTable(results);
-  console.log(allDepartments);
-  connection.end();
+  const [newDepartment] = await connection.execute(sql[1]);
+
+  if (!inserted.affectedRows) {
+    connection.end()
+    return
+  } else {
+    connection.end()
+    return newDepartment;
+  }
 }
 
 async function deleteDepartment(department) {

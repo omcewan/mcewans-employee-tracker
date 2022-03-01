@@ -1,5 +1,4 @@
 const inquirer = require("inquirer");
-
 const {
   getEmployees,
   employeesByManager,
@@ -8,6 +7,7 @@ const {
   deleteEmployee,
   addEmployee,
   updateEmployeeRole,
+  reference,
 } = require("./utils/employees");
 const { getRoles, addRole, deleteRole } = require("./utils/roles");
 const {
@@ -76,8 +76,13 @@ const promptUser = () => {
     }
 
     if (company === "Update Employee's Manager") {
-      inquirer
-        .prompt(updateManagerQuestions)
+      return reference()
+        .then((referenceTable) => {
+          console.log(referenceTable);
+        })
+        .then(() => {
+          return inquirer.prompt(updateManagerQuestions);
+        })
         .then(({ employee, manager }) => {
           return updateEmployeeManager(employee, manager);
         })
@@ -91,14 +96,13 @@ const promptUser = () => {
           }
         })
         .then(() => {
-          promptUser();
+          return promptUser();
         })
-        .catch(() => {
-          console.log(
-            `The Manager ID does not exist! Please Choose a valid ID!`
-          );
-          promptUser();
-        })
+        .catch((err) => {
+          console.log("The Manager ID entered does not exist!");
+          // console.error(err.sqlMessage);
+          return promptUser();
+        });
     }
 
     if (company === "Update Employee's Role") {
@@ -119,10 +123,10 @@ const promptUser = () => {
         .then(() => {
           promptUser();
         })
-        .catch(() => {
-          console.log("The role does not exist")
+        .catch((err) => {
+          console.error(err.sqlMessage);
           promptUser();
-        })
+        });
     }
 
     if (company === "Delete An Employee") {
@@ -146,16 +150,34 @@ const promptUser = () => {
     }
 
     if (company === "View All Departments") {
-      getDepartments().then(() => {
-        promptUser();
-      });
+      getDepartments()
+        .then((allDepartments) => {
+          console.log(allDepartments);
+        })
+        .then(() => {
+          promptUser();
+        });
     }
 
     if (company === "Add A Department") {
       inquirer.prompt(addDepartmentQuestion).then(({ department }) => {
-        addDepartment(department).then(() => {
-          promptUser();
-        });
+        return addDepartment(department)
+          .then((newDepartment) => {
+            if (newDepartment) {
+              console.log(
+                `${newDepartment[0].department} was added to the database as a new Department!`
+              );
+            } else {
+              console.log("This department exists already!");
+            }
+          })
+          .then(() => {
+            promptUser();
+          })
+          .catch((err) => {
+            console.error(err.sqlMessage);
+            promptUser();
+          });
       });
     }
 
