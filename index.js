@@ -89,11 +89,17 @@ const promptUser = () => {
       inquirer
         .prompt(deleteEmployeeQuestion)
         .then(({ employee }) => {
-          deleteEmployee(employee);
+          return deleteEmployee(employee);
         })
-        .then(() => {
+        .then((removedEmployee) => {
+          if (removedEmployee) {
+            console.log(`${removedEmployee[0].first_name} ${removedEmployee[0].last_name} was removed from the database!`)
+          } else {
+            console.log("Employee ID Does Not Exist!")
+          }
+        }).then(() => {
           promptUser();
-        });
+        })
     }
 
     if (company === "View All Departments") {

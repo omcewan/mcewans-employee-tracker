@@ -193,30 +193,19 @@ async function deleteEmployee(employee) {
     database: "my_company",
   });
 
-  const sql = [
-    `DELETE FROM employees
-  WHERE id = ${employee} `,
-    `SELECT E.id, E.first_name, E.last_name, roles.title AS title,
-  departments.department_name AS department, roles.salary,  CONCAT (M.first_name,' ', M.last_name) AS manager
-  FROM employees E
-  LEFT JOIN roles 
-  ON E.role_id = roles.id
-  LEFT JOIN departments
-  ON roles.department_id = departments.id
-  LEFT JOIN employees M
-  ON M.id = E.manager_id`,
-  ];
+  const sql = `DELETE FROM employees WHERE id = ${employee}`;
+  const sql1 = `SELECT first_name, last_name FROM employees WHERE id = ${employee}`;
 
-  const [results] = await connection.execute(sql[0]);
+  const [result] = await connection.execute(sql1);
+  const [removed] = await connection.execute(sql);
 
-  if (!results.affectedRows) {
-    console.log({ message: "Employee ID Does Not Exist!" });
+  if (!removed.affectedRows) {
+    connection.end();
+    return;
   } else {
-    const [results] = await connection.execute(sql[1]);
-    const allEmployees = cTable.getTable(results);
-    console.log(allEmployees);
+    connection.end();
+    return result;
   }
-  connection.end();
 }
 
 module.exports = {
