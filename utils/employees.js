@@ -22,25 +22,36 @@ async function reference() {
     ON roles.department_id = departments.id
     LEFT JOIN employees M
     ON M.id = E.manager_id`,
+    `SELECT departments.id AS "Department ID", departments.department_name AS Department FROM departments`,
   ];
 
   const [manager] = await connection.execute(sql[0]);
-  const referenceTable = cTable.getTable("\nViewing Current Managers", manager);
+  const referenceTable = cTable.getTable(
+    "\nViewing Current Managers\n",
+    manager
+  );
   references.push(referenceTable);
 
   const [employee] = await connection.execute(sql[1]);
   const referenceTable1 = cTable.getTable(
-    "\nViewing Roles & Department",
+    "\nViewing Roles & Department\n",
     employee
   );
   references.push(referenceTable1);
 
   const [results] = await connection.execute(sql[2]);
   const allEmployees = cTable.getTable(
-    "\n\nCurrently Viewing All Employees",
+    "\nCurrently Viewing All Employees\n",
     results
   );
   references.push(allEmployees);
+
+  const [departments] = await connection.execute(sql[3]);
+  const allDepartments = cTable.getTable(
+    "\n\nViewing All Departments",
+    departments
+  );
+  references.push(allDepartments);
 
   connection.end();
 

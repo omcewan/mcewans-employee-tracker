@@ -9,14 +9,14 @@ async function getDepartments() {
     database: "my_company",
   });
 
-  const sql = `SELECT departments.id, departments.department_name AS department FROM departments`;
+  const sql = `SELECT departments.id AS "Department ID", departments.department_name AS Department FROM departments`;
   const [results] = await connection.execute(sql);
   const allDepartments = cTable.getTable(
     "\n\nCurrently Viewing All Departments",
     results
   );
   connection.end();
-  return allDepartments
+  return allDepartments;
 }
 
 async function addDepartment(department) {
@@ -30,7 +30,7 @@ async function addDepartment(department) {
   const sql = [
     `INSERT INTO departments (department_name)
   VALUES ('${department}')`,
-    `SELECT departments.department_name AS department FROM departments WHERE departments.department_name = '${department}'`,
+    `SELECT departments.department_name AS Department FROM departments WHERE departments.department_name = '${department}'`,
   ];
 
   // TODO: fix error with duplicates
@@ -39,10 +39,10 @@ async function addDepartment(department) {
   const [newDepartment] = await connection.execute(sql[1]);
 
   if (!inserted.affectedRows) {
-    connection.end()
-    return
+    connection.end();
+    return;
   } else {
-    connection.end()
+    connection.end();
     return newDepartment;
   }
 }
@@ -58,19 +58,19 @@ async function deleteDepartment(department) {
   const sql = [
     `DELETE FROM departments
   WHERE id = ${department} `,
-    `SELECT departments.id, departments.department_name AS department FROM departments`,
+    `SELECT departments.department_name AS Department FROM departments WHERE departments.id = ${department}`,
   ];
 
+  const [result] = await connection.execute(sql[1]);
   const [results] = await connection.execute(sql[0]);
 
   if (!results.affectedRows) {
-    console.log({ message: "Employee ID Does Not Exist!" });
+    connection.end()
+    return;
   } else {
-    const [results] = await connection.execute(sql[1]);
-    const allDepartments = cTable.getTable(results);
-    console.log(allDepartments);
+    connection.end();
+    return result;
   }
-  connection.end();
 }
 
 module.exports = { getDepartments, addDepartment, deleteDepartment };

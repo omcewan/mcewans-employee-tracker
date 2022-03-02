@@ -157,7 +157,7 @@ const updateRoleQuestions = [
     type: "input",
     name: "role",
     message:
-      "Please enter the ID for the role you would like to add to this employee!",
+      "Please enter the ID for the role you would like to add to this employee! Please reference the above table",
     validate: (role) => {
       if (role == +role) {
         return true;
@@ -221,7 +221,7 @@ const deleteDepartmentQuestion = [
     name: "department",
     message: "Please enter the ID for the department you would like to delete!",
     validate: (department) => {
-      if (department) {
+      if (department == +department) {
         return true;
       } else {
         console.log("Please enter a valid ID!");

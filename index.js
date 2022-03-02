@@ -73,7 +73,7 @@ const promptUser = () => {
         })
         .then((newEmployee) => {
           console.log(
-            `\n${newEmployee[0].first_name} ${newEmployee[0].last_name} was added to the database as a(n) ${newEmployee[0].title} under ${newEmployee[0].manager}\n!`
+            `\n${newEmployee[0].first_name} ${newEmployee[0].last_name} was added to the database as a(n) ${newEmployee[0].title} under ${newEmployee[0].manager}!\n`
           );
         })
         .then(() => {
@@ -171,45 +171,63 @@ const promptUser = () => {
     }
 
     if (company === "View All Departments") {
-      getDepartments()
+      return getDepartments()
         .then((allDepartments) => {
           console.log(allDepartments);
         })
         .then(() => {
-          promptUser();
+          return promptUser();
         });
     }
 
     if (company === "Add A Department") {
-      inquirer.prompt(addDepartmentQuestion).then(({ department }) => {
-        return addDepartment(department)
-          .then((newDepartment) => {
-            if (newDepartment) {
+      return reference()
+        .then((referenceTable) => {
+          console.log(referenceTable[3]);
+        })
+        .then(() => {
+          return inquirer.prompt(addDepartmentQuestion);
+        })
+        .then(({ department }) => {
+          return addDepartment(department)
+            .then((newDepartment) => {
               console.log(
-                `${newDepartment[0].department} was added to the database as a new Department!`
+                `\n${newDepartment[0].Department} was added to the database as a new Department!\n`
               );
-            } else {
-              console.log("This department exists already!");
-            }
-          })
-          .then(() => {
-            promptUser();
-          })
-          .catch((err) => {
-            console.error(err.sqlMessage);
-            promptUser();
-          });
-      });
+            })
+            .then(() => {
+              return promptUser();
+            })
+            .catch((err) => {
+              console.log("\nThis Department already exists!\n");
+              // console.error(err.sqlMessage);
+              return promptUser();
+            });
+        });
     }
 
     if (company === "Delete A Department") {
-      inquirer
-        .prompt(deleteDepartmentQuestion)
-        .then(({ department }) => {
-          deleteDepartment(department);
+      return reference()
+        .then((referenceTable) => {
+          console.log(referenceTable[3]);
         })
         .then(() => {
-          promptUser();
+          return inquirer.prompt(deleteDepartmentQuestion);
+        })
+        .then(({ department }) => {
+          return deleteDepartment(department);
+        })
+        .then((removedDepartment) => {
+          console.log(
+            `\n${removedDepartment[0].Department} was removed from the database!\n`
+          );
+        })
+        .then(() => {
+          return promptUser();
+        })
+        .catch((err) => {
+          console.log("\nThis Department Does Not Exist!\n");
+          return promptUser();
         });
     }
 
