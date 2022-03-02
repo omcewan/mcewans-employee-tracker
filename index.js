@@ -27,6 +27,8 @@ const {
   deleteRoleQuestion,
 } = require("./utils/questions");
 
+const figlet = require("figlet");
+
 const promptUser = () => {
   return inquirer.prompt(initialQuestion).then(({ company }) => {
     if (company === "View All Employees") {
@@ -215,7 +217,14 @@ const promptUser = () => {
         });
     }
     if (company === "Quit") {
-      console.log("GoodBye");
+      figlet("GOOD BYE!!", function (err, data) {
+        if (err) {
+          console.log("Something went wrong...");
+          console.dir(err);
+          return;
+        }
+        console.log(data);
+      });
     }
   });
 };
