@@ -9,15 +9,18 @@ async function getRoles() {
     database: "my_company",
   });
 
-  const sql = `SELECT roles.id, roles.title, departments.department_name AS department, roles.salary
+  const sql = `SELECT roles.id AS "Role ID", roles.title AS Title, departments.department_name AS Department, roles.salary AS Salary
   FROM roles
   LEFT JOIN departments
   ON roles.department_id = departments.id`;
 
   const [results] = await connection.execute(sql);
-  const tableAllRoles = cTable.getTable("\n\nCurrently Viewing All Roles", results);
-  console.log(tableAllRoles);
+  const tableAllRoles = cTable.getTable(
+    "\n\nCurrently Viewing All Roles",
+    results
+  );
   connection.end();
+  return tableAllRoles;
 }
 
 async function addRole(role, departmentid, salary) {
@@ -31,30 +34,19 @@ async function addRole(role, departmentid, salary) {
   const sql = [
     `INSERT INTO roles (title, department_id, salary)
   VALUES ('${role}', ${departmentid}, ${salary})`,
-    `SELECT roles.id, roles.title, departments.department_name AS department, roles.salary
-  FROM roles
-  LEFT JOIN departments
-  ON roles.department_id = departments.id`,
+    `SELECT roles.title FROM roles WHERE roles.title = '${role}'`,
   ];
 
   // TODO: fix error with duplicates
-  const [result] = await connection.query(sql[0]);
+  const [result] = await connection.execute(sql[0]);
+  const [result1] = await connection.execute(sql[1]);
   if (!result.affectedRows) {
-    console.log({ message: "Department already exists!" });
+    connection.end();
+    return;
+  } else {
+    connection.end();
+    return result1;
   }
-
-  const [results] = await connection.execute(sql[1]);
-  const allDepartments = cTable.getTable(results);
-  console.log(`
-  
-  
-  
-  
-  
-  
-  
-  ${allDepartments}`);
-  connection.end();
 }
 
 async function deleteRole(role) {
@@ -66,24 +58,20 @@ async function deleteRole(role) {
   });
 
   const sql = [
-    `DELETE FROM roles
-  WHERE id = ${role} `,
-    `SELECT roles.id, roles.title, departments.department_name AS department, roles.salary
-  FROM roles
-  LEFT JOIN departments
-  ON roles.department_id = departments.id`,
+    `DELETE FROM roles WHERE id = ${role}`,
+    `SELECT roles.title FROM roles WHERE roles.id = ${role}`,
   ];
 
+  const [result] = await connection.execute(sql[1]);
   const [results] = await connection.execute(sql[0]);
 
   if (!results.affectedRows) {
-    console.log({ message: "Employee ID Does Not Exist!" });
+    connection.end();
+    return;
   } else {
-    const [results] = await connection.execute(sql[1]);
-    const allDepartments = cTable.getTable(results);
-    console.log(allDepartments);
+    connection.end();
+    return result;
   }
-  connection.end();
 }
 
 module.exports = { getRoles, addRole, deleteRole };

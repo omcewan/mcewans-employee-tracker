@@ -23,6 +23,10 @@ async function reference() {
     LEFT JOIN employees M
     ON M.id = E.manager_id`,
     `SELECT departments.id AS "Department ID", departments.department_name AS Department FROM departments`,
+    `SELECT roles.id AS "Role ID", roles.title AS Title, departments.id AS "Department ID", departments.department_name AS Department, roles.salary AS Salary
+    FROM roles
+    LEFT JOIN departments
+    ON roles.department_id = departments.id`,
   ];
 
   const [manager] = await connection.execute(sql[0]);
@@ -53,8 +57,11 @@ async function reference() {
   );
   references.push(allDepartments);
 
-  connection.end();
+  const [roles] = await connection.execute(sql[4]);
+  const allRoles = cTable.getTable("\n\nViewing All Roles", roles);
+  references.push(allRoles);
 
+  connection.end();
   return references;
 }
 

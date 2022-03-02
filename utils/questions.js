@@ -58,7 +58,7 @@ const addRoleQuestions = [
     message:
       "Please enter the department id  you would like to add this role to!",
     validate: (departmentId) => {
-      if (departmentId) {
+      if (departmentId == +departmentId) {
         return true;
       } else {
         console.log("Please enter a department id to associate this role to!");
@@ -71,7 +71,7 @@ const addRoleQuestions = [
     name: "salary",
     message: "Please enter the salary you would like to add to this role!",
     validate: (salary) => {
-      if (salary) {
+      if (salary == +salary) {
         return true;
       } else {
         console.log("Please enter a salary!");
