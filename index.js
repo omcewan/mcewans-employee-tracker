@@ -195,7 +195,7 @@ const promptUser = () => {
         )
         .then(() => promptUser())
         .catch((err) => {
-          console.log("\nDepartment does not exisit!\n");
+          console.log("\nDepartment does not exists Or Role already exists!\n");
           return promptUser();
         });
     }
@@ -224,6 +224,7 @@ const promptUser = () => {
           return;
         }
         console.log(data);
+        process.exit()
       });
     }
   });

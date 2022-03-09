@@ -1,31 +1,20 @@
-const mysql = require("mysql2/promise");
 const cTable = require("console.table");
+const connection = require("../config/connection");
 
 async function getDepartments() {
-  const connection = await mysql.createConnection({
-    host: "127.0.0.1",
-    user: "root",
-    password: "mountain_DECANT2whitish",
-    database: "my_company",
-  });
+ const connect = await connection
 
   const sql = `SELECT departments.id AS "Department ID", departments.department_name AS Department FROM departments`;
-  const [results] = await connection.execute(sql);
+  const [results] = await connect.execute(sql);
   const allDepartments = cTable.getTable(
     "\n\nCurrently Viewing All Departments",
     results
   );
-  connection.end();
   return allDepartments;
 }
 
 async function addDepartment(department) {
-  const connection = await mysql.createConnection({
-    host: "127.0.0.1",
-    user: "root",
-    password: "mountain_DECANT2whitish",
-    database: "my_company",
-  });
+ const connect = await connection
 
   const sql = [
     `INSERT INTO departments (department_name)
@@ -33,27 +22,19 @@ async function addDepartment(department) {
     `SELECT departments.department_name AS Department FROM departments WHERE departments.department_name = '${department}'`,
   ];
 
-  // TODO: fix error with duplicates
-  const [inserted] = await connection.query(sql[0]);
+  const [inserted] = await connect.query(sql[0]);
 
-  const [newDepartment] = await connection.execute(sql[1]);
+  const [newDepartment] = await connect.execute(sql[1]);
 
   if (!inserted.affectedRows) {
-    connection.end();
     return;
   } else {
-    connection.end();
     return newDepartment;
   }
 }
 
 async function deleteDepartment(department) {
-  const connection = await mysql.createConnection({
-    host: "127.0.0.1",
-    user: "root",
-    password: "mountain_DECANT2whitish",
-    database: "my_company",
-  });
+ const connect = await connection
 
   const sql = [
     `DELETE FROM departments
@@ -61,14 +42,12 @@ async function deleteDepartment(department) {
     `SELECT departments.department_name AS Department FROM departments WHERE departments.id = ${department}`,
   ];
 
-  const [result] = await connection.execute(sql[1]);
-  const [results] = await connection.execute(sql[0]);
+  const [result] = await connect.execute(sql[1]);
+  const [results] = await connect.execute(sql[0]);
 
   if (!results.affectedRows) {
-    connection.end()
     return;
   } else {
-    connection.end();
     return result;
   }
 }
