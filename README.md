@@ -23,7 +23,7 @@ This application is am employee tracker that was develop to keep a database for 
 ![This is a screenshot](assets/employee-tracker.png)
 
 ## Installation
-To install this application you need to clone the code base to your system from the repository on github. You will need to have node.js installed to install the dependencies of this application from the node package manager npm. Once node is installed you will run npm install from the command line and all the dependencies will be installed.
+To install this application you need to clone the code base to your system from the repository on github. You will need to have node.js installed to install the dependencies of this application from the node package manager npm. Once node is installed you will run npm install from the command line and all the dependencies will be installed. Then you will need to source the data to your mysql database. This can be done by loging into your mysql and then running 'source db/db.sql', then 'source db/schema.sql 'and lastly 'source db/seeds.sql', the sample data will now be in mysql. You can quit mysql and then run npm start to run the application. 
 
 ## Usage
 To use this application once installed, in the command line of your terminal, run the command npm start and application will initialize. You will be given a list of options to choose from and depending on your choice  the app will respond accordingly.
